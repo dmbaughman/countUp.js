@@ -16,7 +16,7 @@ var CountUp = function(target, startVal, endVal, decimals, duration, options) {
 
 	var self = this;
 	self.version = function () { return '1.9.3'; };
-	
+
 	// default options
 	self.options = {
 		useEasing: true, // toggle easing
@@ -56,20 +56,21 @@ var CountUp = function(target, startVal, endVal, decimals, duration, options) {
 		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
 		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
 	}
-	if (!window.requestAnimationFrame) {
+	// if (!window.requestAnimationFrame) {
 		window.requestAnimationFrame = function(callback, element) {
 			var currTime = new Date().getTime();
 			var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			timeToCall = 20;
 			var id = window.setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
 			lastTime = currTime + timeToCall;
 			return id;
 		};
-	}
-	if (!window.cancelAnimationFrame) {
+	// }
+	// if (!window.cancelAnimationFrame) {
 		window.cancelAnimationFrame = function(id) {
 			clearTimeout(id);
 		};
-	}
+	// }
 
 	function formatNumber(num) {
 		var neg = (num < 0),
@@ -108,12 +109,12 @@ var CountUp = function(target, startVal, endVal, decimals, duration, options) {
 		return (typeof n === 'number' && !isNaN(n));
 	}
 
-	self.initialize = function() { 
+	self.initialize = function() {
 		if (self.initialized) return true;
-		
+
 		self.error = '';
 		self.d = (typeof target === 'string') ? document.getElementById(target) : target;
-		if (!self.d) { 
+		if (!self.d) {
 			self.error = '[CountUp] target is null or undefined'
 			return false;
 		}
@@ -150,6 +151,16 @@ var CountUp = function(target, startVal, endVal, decimals, duration, options) {
 		}
 	};
 
+
+	function getRandomInt(min, max) {
+	  min = Math.ceil(min);
+	  max = Math.floor(max);
+	  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+	}
+
+	// Modify the print displayed interval
+	self.prevVal = startVal;
+
 	self.count = function(timestamp) {
 
 		if (!self.startTime) { self.startTime = timestamp; }
@@ -184,7 +195,10 @@ var CountUp = function(target, startVal, endVal, decimals, duration, options) {
 		self.frameVal = Math.round(self.frameVal*self.dec)/self.dec;
 
 		// format and print value
-		self.printValue(self.frameVal);
+		if (timestamp % 10 === 0 && (self.frameVal > self.prevVal + getRandomInt(75,150))) {
+			self.printValue(self.frameVal);
+			self.prevVal = self.frameVal;
+		}
 
 		// whether to continue
 		if (progress < self.duration) {
