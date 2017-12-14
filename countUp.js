@@ -195,7 +195,7 @@ var CountUp = function(target, startVal, endVal, decimals, duration, options) {
 		self.frameVal = Math.round(self.frameVal*self.dec)/self.dec;
 
 		// format and print value
-		if (timestamp % 5 === 0 && (self.frameVal > self.prevVal + getRandomInt(50,100))) {
+		if (self.frameVal > self.prevVal + getRandomInt(50,100)) {
 			self.printValue(self.frameVal);
 			self.prevVal = self.frameVal;
 		}
